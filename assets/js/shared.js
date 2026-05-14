@@ -199,18 +199,26 @@
   function initReadingProgress() {
     var bar = document.querySelector('.progress > i');
     if (!bar) return;
-    var raf = 0;
-    function update() {
-      var h = document.documentElement;
-      var max = h.scrollHeight - h.clientHeight;
-      var p = max > 0 ? (h.scrollTop / max) * 100 : 0;
+    function update(e) {
+      var p = (e && e.progress != null)
+        ? e.progress * 100
+        : (function () {
+            var h = document.documentElement;
+            var max = h.scrollHeight - h.clientHeight;
+            return max > 0 ? (h.scrollTop / max) * 100 : 0;
+          }());
       bar.style.width = p + '%';
     }
-    update();
-    window.addEventListener('scroll', function () {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(update);
-    }, { passive: true });
+    update({});
+    if (window.lenis) {
+      window.lenis.on('scroll', update);
+    } else {
+      var raf = 0;
+      window.addEventListener('scroll', function () {
+        cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(function () { update(null); });
+      }, { passive: true });
+    }
   }
 
   // ─── Smooth scroll for in-page anchor links ────────────────────────────
@@ -223,7 +231,11 @@
       var target = document.querySelector(href);
       if (!target) return;
       e.preventDefault();
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (window.lenis) {
+        window.lenis.scrollTo(target, { offset: 0 });
+      } else {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
       history.replaceState(null, '', href);
     });
   }
@@ -257,6 +269,7 @@
       if (url.pathname === location.pathname && url.hash) return;
       e.preventDefault();
       document.body.classList.add('page-leaving');
+      if (window.lenis) window.lenis.stop();
       setTimeout(function () { location.href = href; }, 260);
     });
     // If the user navigates back, undo the fade-out class.
@@ -356,23 +369,25 @@
   function initParallax() {
     var els = document.querySelectorAll('[data-parallax]');
     if (!els.length) return;
-    var raf = 0;
-    function update() {
-      var y = window.scrollY;
+    function update(e) {
+      var y = (e && e.scroll != null) ? e.scroll : window.scrollY;
       els.forEach(function (el) {
         var f = parseFloat(el.dataset.parallax) || 0.3;
-        // Only apply while the element's section is in or near the viewport,
-        // otherwise we'd shove it out of place for users who land deep.
         var r = el.getBoundingClientRect();
         if (r.bottom < -200 || r.top > window.innerHeight + 200) return;
         el.style.setProperty('--parallax', (y * f * -0.4) + 'px');
       });
     }
-    update();
-    window.addEventListener('scroll', function () {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(update);
-    }, { passive: true });
+    update({});
+    if (window.lenis) {
+      window.lenis.on('scroll', update);
+    } else {
+      var raf = 0;
+      window.addEventListener('scroll', function () {
+        cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(function () { update(null); });
+      }, { passive: true });
+    }
   }
 
   // ─── Nav drawer (mobile / tablet hamburger menu) ─────────────────────────
@@ -385,8 +400,16 @@
     var scrim  = document.querySelector('.nav-scrim');
     var closeBtn = document.querySelector('.nav-drawer-close');
     if (!burger || !drawer) return;
-    function open()  { document.body.classList.add('nav-open'); burger.setAttribute('aria-expanded', 'true'); }
-    function close() { document.body.classList.remove('nav-open'); burger.setAttribute('aria-expanded', 'false'); }
+    function open()  {
+      document.body.classList.add('nav-open');
+      burger.setAttribute('aria-expanded', 'true');
+      if (window.lenis) window.lenis.stop();
+    }
+    function close() {
+      document.body.classList.remove('nav-open');
+      burger.setAttribute('aria-expanded', 'false');
+      if (window.lenis) window.lenis.start();
+    }
     function toggle(){ document.body.classList.contains('nav-open') ? close() : open(); }
     burger.addEventListener('click', toggle);
     if (scrim) scrim.addEventListener('click', close);
@@ -404,8 +427,24 @@
     });
   }
 
+  // ─── Brand name block ────────────────────────────────────────────────────
+  // Splits the .sub ("Academy") text into individual letter spans so
+  // justify-content: space-between can stretch it to match "The Paradox" above.
+  function initBrandLetters() {
+    document.querySelectorAll('.brand .word .sub, .foot-brand .word .sub').forEach(function (el) {
+      var letters = el.textContent.trim().split('');
+      el.textContent = '';
+      letters.forEach(function (ch) {
+        var s = document.createElement('span');
+        s.textContent = ch;
+        el.appendChild(s);
+      });
+    });
+  }
+
   // ─── Init all ───────────────────────────────────────────────────────────
   function init() {
+    initBrandLetters();
     initFooterYear();
     initNavScroll();
     initNavActive();

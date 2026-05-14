@@ -25,13 +25,22 @@
 
     <!-- ─── Page loader ──────────────────────────────────────────────────── -->
     <div id="loader" aria-hidden="true">
+      <div class="loader-grain"></div>
+      <div class="loader-glow"></div>
+      <div class="loader-corner loader-corner--tl"></div>
+      <div class="loader-corner loader-corner--tr"></div>
+      <div class="loader-corner loader-corner--bl"></div>
+      <div class="loader-corner loader-corner--br"></div>
       <div class="loader-inner">
         <img class="loader-crest" src="assets/img/paradoxum-crest.png" alt="">
-        <p class="loader-title">The Paradox</p>
-        <span class="loader-academy">Academy</span>
+        <div class="loader-brand">
+          <p class="loader-title">The Paradox</p>
+          <span class="loader-academy"><span>A</span><span>C</span><span>A</span><span>D</span><span>E</span><span>M</span><span>Y</span></span>
+        </div>
         <div class="loader-rule"></div>
         <span class="loader-locale">Siaya · Kenya</span>
       </div>
+      <div class="loader-bar"><div class="loader-bar-fill"></div></div>
     </div>
 
     <!-- ─── Utility bar ──────────────────────────────────────────────────── -->
@@ -454,7 +463,7 @@
 
       <!-- ─── § 03 · Story (editorial) ───────────────────────────────────── -->
       <section id="story" style="position:relative;overflow:hidden;">
-        <img src="assets/img/pillar2.png" alt="" aria-hidden="true"
+        <img src="assets/img/pillar2.png" alt="" aria-hidden="true" loading="lazy"
           style="position:absolute;right:62%;top:-5%;height:110%;width:auto;opacity:0.18;pointer-events:none;user-select:none;">
         <div class="container" style="position:relative;z-index:1;">
           <div class="sec-head reveal">
@@ -510,39 +519,34 @@
             <h2>A campus built for <span class="it">discovery</span> — and for joy.</h2>
           </div>
           <div class="campus-grid reveal stagger">
-            <a href="student-life.html">
-              <div class="ph c1" data-label="Morning assembly on the quad — full school">
-                <div class="ico-corner"><svg class="ico">
-                    <use href="#ico-sun" />
-                  </svg></div>
+            <a class="c1" href="student-life.html">
+              <div class="campus-cell">
+                <img src="assets/img/hero-1-assembly.jpg" alt="Morning assembly on the campus quad" loading="lazy">
+                <div class="ico-corner"><svg class="ico"><use href="#ico-sun" /></svg></div>
               </div>
             </a>
-            <a href="facilities.html">
-              <div class="ph c2" data-label="Science laboratory — Grade 8 practical">
-                <div class="ico-corner"><svg class="ico">
-                    <use href="#ico-flask" />
-                  </svg></div>
+            <a class="c2" href="facilities.html">
+              <div class="campus-cell">
+                <img src="assets/img/facility-science.jpg.png" alt="Science laboratory — Grade 8 practical" loading="lazy">
+                <div class="ico-corner"><svg class="ico"><use href="#ico-flask" /></svg></div>
               </div>
             </a>
-            <a href="student-life.html">
-              <div class="ph c3" data-label="Football pitch & athletics track at golden hour">
-                <div class="ico-corner"><svg class="ico">
-                    <use href="#ico-trophy" />
-                  </svg></div>
+            <a class="c3" href="student-life.html">
+              <div class="campus-cell">
+                <img src="assets/img/facility-athletics.jpg" alt="Football pitch and athletics track" loading="lazy">
+                <div class="ico-corner"><svg class="ico"><use href="#ico-trophy" /></svg></div>
               </div>
             </a>
-            <a href="facilities.html">
-              <div class="ph c4" data-label="ICT laboratory — coding club in session">
-                <div class="ico-corner"><svg class="ico">
-                    <use href="#ico-code" />
-                  </svg></div>
+            <a class="c4" href="facilities.html">
+              <div class="campus-cell">
+                <img src="assets/img/facility-ict.jpg" alt="ICT laboratory — coding club in session" loading="lazy">
+                <div class="ico-corner"><svg class="ico"><use href="#ico-code" /></svg></div>
               </div>
             </a>
-            <a href="facilities.html">
-              <div class="ph c5" data-label="Library & resource centre — reading hour">
-                <div class="ico-corner"><svg class="ico">
-                    <use href="#ico-book" />
-                  </svg></div>
+            <a class="c5" href="facilities.html">
+              <div class="campus-cell">
+                <img src="assets/img/hero-5-library.jpg" alt="Library and resource centre" loading="lazy">
+                <div class="ico-corner"><svg class="ico"><use href="#ico-book" /></svg></div>
               </div>
             </a>
           </div>
@@ -559,7 +563,7 @@
             </div>
             <h2>What our <span class="it">family</span> says.</h2>
           </div>
-          <div class="testi-grid reveal stagger">
+          <div class="testi-grid">
             <div class="testi">
               <div class="mark">"</div>
               <blockquote>The management team is excellent. My child has grown tremendously since joining Paradox.
@@ -671,7 +675,7 @@
         <div class="foot-top">
           <div>
             <a class="foot-brand" href="index.html">
-              <img src="assets/img/paradoxum-crest.png" alt="The Paradox Academy crest">
+              <img src="assets/img/paradoxum-crest.png" alt="The Paradox Academy crest" loading="lazy">
               <span class="word">
                 The Paradox
                 <span class="sub">Academy</span>
@@ -732,6 +736,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+    <script src="assets/js/lenis-gsap.js"></script>
     <script src="assets/js/icons.js"></script>
     <script src="assets/js/shared.js"></script>
     <script src="assets/js/gsap-effects.js"></script>
