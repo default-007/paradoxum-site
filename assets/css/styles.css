@@ -4426,3 +4426,28 @@ html.charcoal .crest-halo {
 		transform: none !important;
 	}
 }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   LENIS — required baseline
+   Lenis 1.x adds .lenis / .lenis-smooth / .lenis-stopped / .lenis-scrolling
+   classes to <html>. These rules prevent the browser's native smooth-scroll
+   (which Safari and Chrome enable for anchor jumps and history restores)
+   from fighting Lenis's transform, which is the most common cause of the
+   "scroll jumps back" feel.
+   ───────────────────────────────────────────────────────────────────────── */
+html.lenis,
+html.lenis body {
+	height: auto;
+}
+.lenis.lenis-smooth {
+	scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+	overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+	overflow: clip;
+}
+.lenis.lenis-scrolling iframe {
+	pointer-events: none;
+}

@@ -32,12 +32,16 @@
 
   /* ── Lenis ─────────────────────────────────────────────────────────────── */
   if (hasLenis) {
+    /* Config note: keep `duration` + `easing` OR `lerp` — not both. Lenis 1.x
+       lets `duration` drive wheel easing while `lerp` damps the same channel;
+       set together they fight each other, causing the scroll to overshoot and
+       spring back ("jumps back"). We use duration+easing only, matching the
+       original known-good config from the inline init this file replaced.   */
     window.lenis = new Lenis({
       duration: 1.2,
       easing: function (t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
-      smoothWheel: !noMotion,   /* respect reduced-motion */
-      smoothTouch: false,        /* never on touch — fights native scrolling */
-      lerp: 0.10
+      smoothWheel: !noMotion,
+      smoothTouch: false
     });
 
     /* Velocity bus — downstream effects (marquee speed, etc.) read this. */
@@ -76,4 +80,18 @@
   window.addEventListener('pageshow', function (e) {
     if (e.persisted && window.lenis) window.lenis.start();
   });
+
+  /* ── Layout-shift defence. Lazy-loaded images change page height as they
+     paint into view; ScrollTrigger's anchor positions are computed once at
+     init and get stale, causing triggers to fire at the wrong scroll
+     positions ("the page skips"). Refresh once when window load completes,
+     once after fonts settle, and on resize.                                  */
+  if (hasGsap && hasST) {
+    window.addEventListener('load', function () {
+      ScrollTrigger.refresh();
+    });
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function () { ScrollTrigger.refresh(); });
+    }
+  }
 })();
